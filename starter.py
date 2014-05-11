@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import sys
 
 from parser import get_args
 from pdfquery import PDFQuery
@@ -75,5 +76,9 @@ if __name__ == "__main__":
     elif args.namespace == "folder":
         # Get all documents we wish to extract in folder
         dIds = mendeley.get_documents_in_folder(args.name, args.id)
+
+    if not len(dIds):
+        print "No documents could be found."
+        sys.exit(1)
 
     main(mendeley, dIds)
