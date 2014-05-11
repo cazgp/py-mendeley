@@ -12,9 +12,14 @@ class Mendeley:
         self.conn = sqlite3.connect(y['conn_str'])
         self.cursor = self.conn.cursor()
 
-    def get_documents_in_folder(self, folder_id, recursive=False):
-        query = "select documentId from DocumentFoldersBase where folderId=%d"
-        return self.get_singlet(query % folder_id)
+    def get_documents_in_folder(self, name=None, folder_id=None):
+        query = "select documentId from DocumentFoldersBase where folderId=%s"
+
+        if name:
+            d = "(select id from Folders where name='%s')" % (name,)
+        else:
+            d = str(folder_id)
+        return self.get_singlet(query % d)
 
     def get_document_hash(self, dId):
         query = "select hash from DocumentFiles where documentId=%d"
@@ -38,6 +43,13 @@ class Mendeley:
         return self.cursor.execute(query % ",".join(map(str, hs))).fetchall()
 
     def get_author_year_title(self, dId):
-        query =  'select lastname, year, substr(replace(title, " ", ""),0,10) from documentcontributors as dc join documents as d on dc.documentid = d.id where d.id = %d limit 1'
+        query =  'select lastname, year, title from documentcontributors as dc join documents as d on dc.documentid = d.id where d.id = %d limit 1'
         res = self.cursor.execute(query % dId).fetchall()
-        return "%s-%s-%s.txt" % res[0]
+        return res[0]
+
+    def get_document(self, author, year, title):
+        if title:
+            query = "select id from documents where title=%s" % (title,)
+        else:
+            query = "select d.id from DocumentContributors as dc join documents as d on d.id = dc.documentId where lastName = '%s' and year='%s'" % (author, year)
+        return self.get_singlet(query)

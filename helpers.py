@@ -50,3 +50,6 @@ def substring(str1, str2):
         last_ind = len(rep1) - 1
 
     return " ".join(arr[first_ind:last_ind])
+
+def sanitize(string):
+    return string.replace("- ", "")

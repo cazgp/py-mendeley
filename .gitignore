@@ -56,3 +56,5 @@ docs/_build/
 *.sw[op]
 *.txt
 *.yaml
+*.html*
+*.org
