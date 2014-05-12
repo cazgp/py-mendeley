@@ -26,7 +26,12 @@ def main(m, dIds):
         author, year, title = m.get_author_year_title(dId)
 
         # Append that info right at the start of the file
-        document_highlights = ["* %s, %s - %s" % (author, year, title)]
+        document_header = "* %s, %s - %s" % (author, year, title)
+        # Get the tags to append to the top header
+        document_tags = m.get_document_tags(dId)
+        if document_tags:
+            document_header += '\t:%s:' % (document_tags,)
+        document_highlights = [document_header]
         current_highlight_id = -1
         current_highlight = []
 

@@ -53,3 +53,8 @@ class Mendeley:
         else:
             query = "select d.id from DocumentContributors as dc join documents as d on d.id = dc.documentId where lastName = '%s' and year='%s'" % (author, year)
         return self.get_singlet(query)
+
+    def get_document_tags(self, dId):
+        query = "select group_concat(tag, ':') from documenttags where documentid=%d"
+        return self.cursor.execute(query % dId).fetchall()[0][0]
+
