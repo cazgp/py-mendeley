@@ -36,7 +36,7 @@ class Mendeley:
 
     def get_highlight_rects(self, hs):
         # Need to get the highlights *in order* which they may not actually be
-        query = "select * from FileHighlightRects Where highlightId in (%s) ORDER BY page, y1 DESC, x1" 
+        query = "select * from FileHighlightRects Where highlightId in (%s) ORDER BY highlightid, y1 DESC, x1"
         return self.cursor.execute(query % ",".join(map(str, hs))).fetchall()
 
     def get_author_year_title(self, dId):
