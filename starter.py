@@ -66,7 +66,9 @@ def main(m, dIds):
 
             overlap = 'LTTextLineHorizontal:overlaps_bbox("%f, %f, %f, %f")' % (x1, y1, x2, y2)
 
+        # Generate the file name
         org_name = "%s-%s-%s.org" % (author, year, title.replace(" ", "")[:10])
+
         with open(org_name, 'w') as f:
             output = "\n - ".join(document_highlights)
             f.write(output.encode('utf-8'))

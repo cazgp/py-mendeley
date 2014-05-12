@@ -29,9 +29,6 @@ class Mendeley:
         query = "select id from FileHighlights where documentId=%d"
         return self.get_singlet(query % dId)
 
-    def get_singlet(self, query):
-        return [item[0] for item in self.cursor.execute(query).fetchall()]
-
     def get_file_path(self, dId):
         query = "select localUrl from Files where hash = (select hash from DocumentFiles where documentId=%d)"
         path = self.get_singlet(query % dId)[0].replace('file://', '')
@@ -44,8 +41,7 @@ class Mendeley:
 
     def get_author_year_title(self, dId):
         query =  'select lastname, year, title from documentcontributors as dc join documents as d on dc.documentid = d.id where d.id = %d limit 1'
-        res = self.cursor.execute(query % dId).fetchall()
-        return res[0]
+        return self.cursor.execute(query % dId).fetchall()[0]
 
     def get_document(self, author, year, title):
         if title:
@@ -58,3 +54,5 @@ class Mendeley:
         query = "select group_concat(tag, ':') from documenttags where documentid=%d"
         return self.cursor.execute(query % dId).fetchall()[0][0]
 
+    def get_singlet(self, query):
+        return [item[0] for item in self.cursor.execute(query).fetchall()]
