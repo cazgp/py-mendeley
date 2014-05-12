@@ -18,11 +18,11 @@ Nice to have:
 To-Do
 -----
 
-* Recursive folder searching.
-* Generate a linked file of all documents in folder (currently only one file per document).
-* Specify on the command line where to put generated org files (currently pwd).
-* Add annotations to the output.
-* File watching -> when an annotation is added, automatically recompile.
-  - File watching per folder / per tag.
-* Generate annotations for a given tag.
-* Parse references to generate links between documents.
+* [ ] Recursive folder searching.
+* [ ] Generate a linked file of all documents in folder (currently only one file per document).
+* [ ] Specify on the command line where to put generated org files (currently pwd).
+* [x] Add annotations to the output.
+* [ ] File watching -> when an annotation is added, automatically recompile.
+* [ ] File watching per folder / per tag.
+* [ ] Generate annotations for a given tag.
+* [ ] Parse references to generate links between documents.

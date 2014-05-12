@@ -1,3 +1,5 @@
+from collections import defaultdict
+import math
 import sqlite3
 import urllib2
 import yaml
@@ -28,6 +30,47 @@ class Mendeley:
     def get_highlights(self, dId):
         query = "select id from FileHighlights where documentId=%d"
         return self.get_singlet(query % dId)
+
+    def get_notes(self, dId):
+        # Get all notes for a given document
+        query = "select x, y, page, note from filenotes where documentId=%d"
+        notes = self.cursor.execute(query % dId).fetchall()
+
+        # Get all highlights on pages pointed to by notes
+        query = "select fhr.highlightid, page, x1, x2, y1, y2 from filehighlightrects fhr, filehighlights fh on fhr.highlightid = fh.id where documentid=%d and page in (select distinct page from filenotes where documentid=%d)"
+        rects = self.cursor.execute(query % (dId, dId)).fetchall()
+
+        # Sort them out by page
+        rects_by_page = defaultdict(list)
+        for highlightId, page, x1, x2, y1, y2 in rects:
+            rects_by_page[page].append((highlightId, x1, x2, y1, y2))
+
+        noted = defaultdict(list)
+
+        # For each note, find the closest highlight
+        for x, y, page, note in notes:
+            min_dist = 999
+            min_hId  = 0
+
+            # Grab the highlights for that page and loop through all
+            for highlightId, x1, x2, y1, y2 in rects_by_page[page]:
+                width = x2 - x1
+                height = y2 - y1
+
+                # Calculate distance from point to rect
+                dx = max(min(x, x1+width), x1)
+                dy = max(min(y, y2+height), y2)
+                dist = math.sqrt( (x-dx)**2 + (y-dy)**2 )
+
+                if dist < min_dist:
+                    min_dist = dist
+                    min_hId  = highlightId
+
+                    if min_dist == 0: break
+
+            noted[min_hId].append(note)
+        return noted
+
 
     def get_file_path(self, dId):
         query = "select localUrl from Files where hash = (select hash from DocumentFiles where documentId=%d)"

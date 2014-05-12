@@ -41,11 +41,18 @@ def main(m, dIds):
         pdf.load(*pages)
         pdf_unmerged.load(*pages)
 
+        # Get all notes for this pdf (currently notes *must* be attached to a highlight)
+        notes = m.get_notes(dId)
+
         for _, hId, page, x1, y1, x2, y2 in rects:
 
             # If this highlight ID is different to previous ones, reset the text pieces
             if hId != current_highlight_id:
                 if current_highlight_id != -1:
+                    # Append any notes which may be attached to the highlight
+                    if notes[current_highlight_id]:
+                        current_highlight.append("\n  - " + "\n  - ".join(notes[current_highlight_id]))
+
                     document_highlights.append(" ".join(current_highlight))
 
                 current_highlight_id = hId
