@@ -35,9 +35,8 @@ def main(m, dIds):
         current_highlight_id = -1
         current_highlight = []
 
-        # Get all pages on which there is a highlight
+        # Load all pages on which there is a highlight
         pages = m.get_highlight_pages(dId)
-        print pages
         pdf.load(*pages)
         pdf_unmerged.load(*pages)
 
