@@ -35,6 +35,12 @@ def main(m, dIds):
         current_highlight_id = -1
         current_highlight = []
 
+        # Get all pages on which there is a highlight
+        pages = m.get_highlight_pages(dId)
+        print pages
+        pdf.load(*pages)
+        pdf_unmerged.load(*pages)
+
         for _, hId, page, x1, y1, x2, y2 in rects:
 
             # If this highlight ID is different to previous ones, reset the text pieces
@@ -46,7 +52,6 @@ def main(m, dIds):
                 current_highlight = []
 
             m_page = page - 1
-            pdf.load(m_page)
 
             # If the exact match is missing we need to extract text
             results = extract(pdf, m_page, x1, y1, x2, y2)
@@ -56,7 +61,6 @@ def main(m, dIds):
                 current_highlight.append(sanitize(section.text()))
 
             else:
-                pdf_unmerged.load(m_page)
                 results   = extract(pdf, m_page, x1, y1, x2, y2, False)
                 results_u = extract_unmerged(pdf_unmerged, m_page, x1, y1, x2, y2)
 

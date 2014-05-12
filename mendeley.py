@@ -54,5 +54,11 @@ class Mendeley:
         query = "select group_concat(tag, ':') from documenttags where documentid=%d"
         return self.cursor.execute(query % dId).fetchall()[0][0]
 
+    def get_highlight_pages(self, dId):
+        query = "select group_concat(distinct page) from filehighlightrects as fhr join filehighlights as fh on fhr.highlightid = fh.id where documentid=%d"
+        results = map(lambda x: int(x) - 1, self.get_singlet(query % dId)[0].split(','))
+        results.sort()
+        return results
+
     def get_singlet(self, query):
         return [item[0] for item in self.cursor.execute(query).fetchall()]
